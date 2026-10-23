@@ -2,22 +2,17 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\File;
-use Illuminate\Testing\PendingCommand;
+use IllumaLaw\HealthCheckStripe\HealthcheckStripeServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
-it('publishes the config file under the correct tag', function () {
-    $command = $this->artisan('vendor:publish', [
-        '--tag' => 'healthcheck-stripe-config',
-        '--force' => true,
-    ]);
-
-    if ($command instanceof PendingCommand) {
-        $command->assertExitCode(0);
-    } else {
-        expect($command)->toBe(0);
+it('registers the config publish path under the correct tag', function () {
+    $provider = app()->getProvider(HealthcheckStripeServiceProvider::class);
+    if (! ($provider instanceof HealthcheckStripeServiceProvider)) {
+        throw new RuntimeException('The package service provider must be registered.');
     }
 
-    expect(config_path('healthcheck-stripe.php'))->toBeFile();
+    $source = dirname(__DIR__).'/src/../config/healthcheck-stripe.php';
 
-    File::delete(config_path('healthcheck-stripe.php'));
+    expect(ServiceProvider::pathsToPublish($provider::class, 'healthcheck-stripe-config'))
+        ->toBe([$source => config_path('healthcheck-stripe.php')]);
 });
