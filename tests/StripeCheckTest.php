@@ -8,11 +8,28 @@ use Spatie\Health\Enums\Status;
 
 it('fails when stripe secret is missing', function () {
     config()->set('cashier.secret', '');
+    config()->set('healthcheck-stripe.secret', '');
 
     $result = StripeConnectivityCheck::new()->run();
 
     expect($result->status)->toEqual(Status::failed())
         ->and($result->shortSummary)->toBe('Missing key');
+});
+
+it('uses the package secret when cashier is not configured', function () {
+    config()->set('cashier.secret', null);
+    config()->set('healthcheck-stripe.secret', 'sk_test_fallback');
+
+    /** @var StripeConnectivityCheck&MockInterface $check */
+    $check = Mockery::mock(StripeConnectivityCheck::class)->makePartial();
+    $check->shouldAllowMockingProtectedMethods();
+    $check->shouldReceive('fetchBalance')->once()->with('sk_test_fallback')->andReturn((object) [
+        'livemode' => false,
+        'object' => 'balance',
+        'available' => [],
+    ]);
+
+    expect($check->run()->status)->toEqual(Status::ok());
 });
 
 it('succeeds when stripe api returns balance', function () {

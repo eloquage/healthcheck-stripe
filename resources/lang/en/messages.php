@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 return [
-    'installed' => 'stripe extension is installed (version :version).',
-    'missing' => 'stripe extension is required but not installed.',
-    'not_installed' => 'stripe extension is not installed.',
-    'query_failed' => 'Could not verify stripe extension: :message',
+    'connected' => 'Stripe API credentials are valid.',
+    'missing_key' => 'Stripe secret key is not configured.',
+    'api_error' => 'Stripe API check failed: :message',
+    'slow_response' => 'Stripe responded slowly (:response_time_ms ms).',
 ];
