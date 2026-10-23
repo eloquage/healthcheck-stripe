@@ -7,7 +7,11 @@ use Illuminate\Support\ServiceProvider;
 
 it('registers the config publish path under the correct tag', function () {
     $provider = app()->getProvider(HealthcheckStripeServiceProvider::class);
-    $source = dirname((new ReflectionClass($provider))->getFileName()).'/../config/healthcheck-stripe.php';
+    if (! ($provider instanceof HealthcheckStripeServiceProvider)) {
+        throw new RuntimeException('The package service provider must be registered.');
+    }
+
+    $source = dirname(__DIR__).'/src/../config/healthcheck-stripe.php';
 
     expect(ServiceProvider::pathsToPublish($provider::class, 'healthcheck-stripe-config'))
         ->toBe([$source => config_path('healthcheck-stripe.php')]);
