@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use IllumaLaw\HealthCheckStripe\StripeConnectivityCheck;
+use Mockery\MockInterface;
 use Spatie\Health\Enums\Status;
 
 it('fails when stripe secret is missing', function () {
@@ -17,7 +18,9 @@ it('fails when stripe secret is missing', function () {
 it('succeeds when stripe api returns balance', function () {
     config()->set('cashier.secret', 'sk_test_123');
 
-    $check = Mockery::mock(StripeConnectivityCheck::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    /** @var StripeConnectivityCheck&MockInterface $check */
+    $check = Mockery::mock(StripeConnectivityCheck::class)->makePartial();
+    $check->shouldAllowMockingProtectedMethods();
     $check->shouldReceive('fetchBalance')->once()->andReturn((object) [
         'livemode' => false,
         'object' => 'balance',
@@ -36,7 +39,9 @@ it('succeeds when stripe api returns balance', function () {
 it('fails when stripe api throws exception', function () {
     config()->set('cashier.secret', 'sk_test_123');
 
-    $check = Mockery::mock(StripeConnectivityCheck::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    /** @var StripeConnectivityCheck&MockInterface $check */
+    $check = Mockery::mock(StripeConnectivityCheck::class)->makePartial();
+    $check->shouldAllowMockingProtectedMethods();
     $check->shouldReceive('fetchBalance')->once()->andThrow(new Exception('Invalid API key'));
 
     $result = $check->run();

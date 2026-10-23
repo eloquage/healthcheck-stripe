@@ -6,14 +6,15 @@ namespace IllumaLaw\HealthCheckStripe;
 
 use Spatie\Health\Checks\Check;
 use Spatie\Health\Checks\Result;
-use Stripe\Balance;
+use Stripe\StripeClient;
 use Throwable;
 
 class StripeConnectivityCheck extends Check
 {
     public function run(): Result
     {
-        $secret = (string) config('cashier.secret');
+        $configuredSecret = config('cashier.secret');
+        $secret = is_string($configuredSecret) ? $configuredSecret : '';
 
         if ($secret === '') {
             return Result::make()
@@ -39,9 +40,9 @@ class StripeConnectivityCheck extends Check
             'object' => $balance->object ?? 'balance',
         ];
 
-        if (isset($balance->available) && is_array($balance->available) && $balance->available !== []) {
-            $first = $balance->available[0];
-            $meta['currency'] = $first->currency ?? null;
+        $available = $balance->available ?? null;
+        if (is_array($available) && isset($available[0]) && is_object($available[0])) {
+            $meta['currency'] = $available[0]->currency ?? null;
         }
 
         $result = Result::make()
@@ -58,6 +59,6 @@ class StripeConnectivityCheck extends Check
 
     protected function fetchBalance(string $secret): object
     {
-        return Balance::retrieve([], ['api_key' => $secret]);
+        return (new StripeClient($secret))->balance->retrieve();
     }
 }
