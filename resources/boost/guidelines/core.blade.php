@@ -1,16 +1,15 @@
 # illuma-law/healthcheck-stripe
 
-Checks if the `vector` extension (stripe) is enabled and active in PostgreSQL.
+Checks Stripe API connectivity by retrieving the account balance and measuring response time.
 
 ## Usage
 
 ```php
-use IllumaLaw\HealthCheckStripe\StripeExtensionCheck;
+use IllumaLaw\HealthCheckStripe\StripeConnectivityCheck;
 use Spatie\Health\Facades\Health;
 
 Health::checks([
-    StripeExtensionCheck::new()
-        ->required(true), // If true, FAIL if missing. If false, WARNING.
+    StripeConnectivityCheck::new(),
 ]);
 ```
 
@@ -18,5 +17,5 @@ Health::checks([
 
 Publish config: `php artisan vendor:publish --tag="healthcheck-stripe-config"`
 
-Options in `config/healthcheck-stripe.php`:
-- `required`: (bool) Global default for strictness.
+Configure `cashier.secret` or publish the package config with `STRIPE_SECRET`.
+Stripe requests taking longer than 1500 ms produce a warning.

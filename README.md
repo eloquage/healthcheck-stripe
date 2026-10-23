@@ -1,32 +1,39 @@
-# Healthcheck stripe for Laravel
+# Healthcheck Stripe
 
 [![Tests](https://github.com/eloquage/healthcheck-stripe/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eloquage/healthcheck-stripe/actions)
-[![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](http://choosealicense.com/licenses/mit/)
-[![Latest Stable Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-stripe?label=Version)](https://packagist.org/packages/illuma-law/healthcheck-stripe)
+[![Latest Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-stripe)](https://packagist.org/packages/illuma-law/healthcheck-stripe)
+[![License](https://img.shields.io/packagist/l/illuma-law/healthcheck-stripe)](LICENSE.md)
 
-A focused stripe health check for Spatie's [Laravel Health](https://spatie.be/docs/laravel-health/v1/introduction) package.
+![Stripe connectivity health check illustration](art/banner.png)
 
-This package provides a simple, direct health check to verify that your Stripe API credentials are valid and that the Stripe API is reachable.
+A Laravel Health check that calls Stripe's Balance API to verify that your credentials and API connection work.
 
-## Features
+## Requirements
 
-- **Connectivity Check:** Verifies that your Laravel application can successfully connect to Stripe's API.
-- **Latency Monitoring:** Measures the response time of the Stripe API. If it exceeds a threshold (1500ms), the check will degrade to a Warning state.
-- **Credential Validation:** Ensures that your `CASHIER_SECRET` or `STRIPE_SECRET` is correctly configured and accepted by Stripe.
+- PHP 8.3 or later
+- Laravel 12 or 13
+- [Spatie Laravel Health](https://spatie.be/docs/laravel-health)
+- A Stripe secret key
 
-## Installation
+## Install
 
-Require this package with composer:
-
-```shell
+```bash
 composer require illuma-law/healthcheck-stripe
 ```
 
-## Usage & Integration
+## Configure
 
-Register the check inside your application's health service provider (e.g. `AppServiceProvider` or a dedicated `HealthServiceProvider`), alongside your other Spatie Laravel Health checks:
+Set either `CASHIER_SECRET` when using Laravel Cashier or `STRIPE_SECRET` for this package's own configuration:
 
-### Basic Registration
+```dotenv
+STRIPE_SECRET=sk_test_...
+```
+
+The check uses `cashier.secret` first and falls back to `healthcheck-stripe.secret`.
+
+## Use
+
+Register the check with your Laravel Health checks:
 
 ```php
 use IllumaLaw\HealthCheckStripe\StripeConnectivityCheck;
@@ -37,22 +44,16 @@ Health::checks([
 ]);
 ```
 
-### Expected Result States
+The check retrieves the account balance. Missing credentials or a Stripe API error produce a failed result. A successful response taking longer than 1500 ms produces a warning; faster responses are healthy.
 
-The check interacts with the Spatie Health dashboard and JSON endpoints using these states:
+## Tests
 
-- **Ok:** Stripe API credentials are valid and the service is responsive.
-- **Warning:** Stripe responded successfully, but the response time was higher than 1500ms.
-- **Failed:** Stripe was unreachable, the secret key is missing, or the API returned an authentication error.
-
-## Testing
-
-Run the test suite:
-
-```shell
+```bash
+composer install
 composer test
+composer analyse
 ```
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+MIT. See [LICENSE.md](LICENSE.md).

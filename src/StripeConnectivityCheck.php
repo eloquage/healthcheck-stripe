@@ -14,11 +14,16 @@ class StripeConnectivityCheck extends Check
     public function run(): Result
     {
         $configuredSecret = config('cashier.secret');
+
+        if (! is_string($configuredSecret) || $configuredSecret === '') {
+            $configuredSecret = config('healthcheck-stripe.secret');
+        }
+
         $secret = is_string($configuredSecret) ? $configuredSecret : '';
 
         if ($secret === '') {
             return Result::make()
-                ->failed('Stripe secret key is not configured.')
+                ->failed(__('healthcheck-stripe::messages.missing_key'))
                 ->shortSummary('Missing key');
         }
 
@@ -28,7 +33,7 @@ class StripeConnectivityCheck extends Check
             $balance = $this->fetchBalance($secret);
         } catch (Throwable $exception) {
             return Result::make()
-                ->failed("Stripe API check failed: {$exception->getMessage()}")
+                ->failed(__('healthcheck-stripe::messages.api_error', ['message' => $exception->getMessage()]))
                 ->shortSummary('API error');
         }
 
@@ -46,12 +51,12 @@ class StripeConnectivityCheck extends Check
         }
 
         $result = Result::make()
-            ->ok('Stripe API credentials are valid.')
+            ->ok(__('healthcheck-stripe::messages.connected'))
             ->shortSummary('Connected')
             ->meta($meta);
 
         if ($latencyMs > 1500) {
-            return $result->warning("Stripe responded slowly ({$latencyMs}ms).");
+            return $result->warning(__('healthcheck-stripe::messages.slow_response', ['response_time_ms' => $latencyMs]));
         }
 
         return $result;
