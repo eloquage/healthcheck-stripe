@@ -1,6 +1,6 @@
 # Healthcheck stripe for Laravel
 
-[![Tests](https://github.com/illuma-law/healthcheck-stripe/actions/workflows/run-tests.yml/badge.svg)](https://github.com/illuma-law/healthcheck-stripe/actions)
+[![Tests](https://github.com/eloquage/healthcheck-stripe/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eloquage/healthcheck-stripe/actions)
 [![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](http://choosealicense.com/licenses/mit/)
 [![Latest Stable Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-stripe?label=Version)](https://packagist.org/packages/illuma-law/healthcheck-stripe)
 
