@@ -1,8 +1,8 @@
 # Healthcheck Stripe
 
 [![Tests](https://github.com/eloquage/healthcheck-stripe/actions/workflows/run-tests.yml/badge.svg)](https://github.com/eloquage/healthcheck-stripe/actions)
-[![Latest Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-stripe)](https://packagist.org/packages/illuma-law/healthcheck-stripe)
-[![License](https://img.shields.io/packagist/l/illuma-law/healthcheck-stripe)](LICENSE.md)
+[![Latest Version](https://img.shields.io/packagist/v/eloquage/healthcheck-stripe)](https://packagist.org/packages/eloquage/healthcheck-stripe)
+[![License](https://img.shields.io/packagist/l/eloquage/healthcheck-stripe)](LICENSE.md)
 
 ![Stripe connectivity health check illustration](art/banner.png)
 
@@ -18,7 +18,7 @@ A Laravel Health check that calls Stripe's Balance API to verify that your crede
 ## Install
 
 ```bash
-composer require illuma-law/healthcheck-stripe
+composer require eloquage/healthcheck-stripe
 ```
 
 ## Configure

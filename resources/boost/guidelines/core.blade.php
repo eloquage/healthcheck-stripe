@@ -1,4 +1,4 @@
-# illuma-law/healthcheck-stripe
+# eloquage/healthcheck-stripe
 
 Checks Stripe API connectivity by retrieving the account balance and measuring response time.
 
